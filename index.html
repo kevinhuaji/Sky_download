@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sky光·遇 APK 下載紀錄</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 20px auto;
+            max-width: 800px;
+            color: #333;
+        }
+        h2 { text-align: center; color: #2c3e50; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover { text-decoration: underline; color: #2980b9; }
+        .empty-msg { text-align: center; padding: 20px; color: #888; }
+    </style>
+</head>
+<body>
+
+    <h2>Sky光·遇 APK 下載歷史紀錄</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>更新時間</th>
+                <th>版本號</th>
+                <th>APK 下載連結</th>
+            </tr>
+        </thead>
+        <tbody id="history-table-body">
+            <!-- JavaScript 將會動態載入 JSON 並插入資料 -->
+        </tbody>
+    </table>
+
+    <script>
+        // 讀取自動生成的 JSON 檔案
+        fetch('history.json')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                const tbody = document.getElementById('history-table-body');
+                
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="empty-msg">暫無紀錄</td></tr>';
+                    return;
+                }
+
+                // 將陣列反轉，讓最新的紀錄顯示在最上方
+                data.reverse().forEach(record => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${record.timestamp}</td>
+                        <td>${record.version || '未知'}</td>
+                        <td><a href="${record.downUrl}" target="_blank">🔗 點擊下載</a></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching JSON:', error);
+                const tbody = document.getElementById('history-table-body');
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-msg" style="color: red;">讀取資料失敗，請確認 history.json 是否存在。</td></tr>';
+            });
+    </script>
+
+</body>
+</html>
+
